@@ -62,7 +62,7 @@ namespace ConsoleApplication1
 			AIHeroClient hedef2 = TargetSelector.GetTarget(W.Range, DamageType.Magical);
 			AIHeroClient hedef4 = TargetSelector.GetTarget(R.Range, DamageType.Magical);
 			if (hedef == null) return;
-			if (hedef4.IsValidTarget() && R.IsReady())
+	    if (hedef4.IsValidTarget() && R.IsReady())
             {
                 R.Cast(hedef4);
             }

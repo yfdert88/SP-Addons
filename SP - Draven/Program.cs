@@ -34,7 +34,7 @@ namespace SP___Draven
         static void Loading_OnLoadingComplete(EventArgs args)
         {
             Chat.Print("5.23 - SP Draven Loaded");
-            Player.SetSkinId(4);
+            Player.SetSkinId(2);
             MenuDraven();
             Q = new Spell.Active(SpellSlot.Q);
             W = new Spell.Active(SpellSlot.W);

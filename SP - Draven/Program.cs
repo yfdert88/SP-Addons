@@ -64,7 +64,7 @@ namespace SP___Draven
         static void MenuDraven()
         {
             DraMenu = MainMenu.AddMenu("SP-Draven", "SP-Draven");
-            DraMenu.AddGroupLabel("SP-Draven - Pool Party Draaaaven");
+            DraMenu.AddGroupLabel("SP-Draven - Gladiator Draaaaven");
             DraMenu.AddSeparator();
             DraMenu.AddLabel("SP-Draven v1.0.0.0");
             // COMBO

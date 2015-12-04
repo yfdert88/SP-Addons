@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,6 +30,7 @@ namespace ConsoleApplication1
 		static void Loading_OnLoadingComplete(EventArgs args)
 		{
 			Chat.Print("5.23 - SP Annie Loaded");
+            Player.SetSkinId(8);
 			Q = new Spell.Targeted(SpellSlot.Q, 625);
 			W = new Spell.Targeted(SpellSlot.W, 625);
 			E = new Spell.Targeted(SpellSlot.E, 625);
@@ -62,7 +63,7 @@ namespace ConsoleApplication1
 			AIHeroClient hedef2 = TargetSelector.GetTarget(W.Range, DamageType.Magical);
 			AIHeroClient hedef4 = TargetSelector.GetTarget(R.Range, DamageType.Magical);
 			if (hedef == null) return;
-	    if (hedef4.IsValidTarget() && R.IsReady())
+			if (hedef4.IsValidTarget() && R.IsReady())
             {
                 R.Cast(hedef4);
             }
@@ -74,7 +75,6 @@ namespace ConsoleApplication1
             {
                 W.Cast(hedef2);
             }
-            
         }
         static void HarassAnnie()
         {

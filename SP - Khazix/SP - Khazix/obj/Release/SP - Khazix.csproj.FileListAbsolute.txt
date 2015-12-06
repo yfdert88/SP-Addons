@@ -1,0 +1,11 @@
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - Khazix\SP - Khazix\bin\Release\SP - Khazix.exe.config
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - Khazix\SP - Khazix\bin\Release\SP - Khazix.exe
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - Khazix\SP - Khazix\bin\Release\SP - Khazix.pdb
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - Khazix\SP - Khazix\bin\Release\EloBuddy.dll
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - Khazix\SP - Khazix\bin\Release\EloBuddy.SDK.dll
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - Khazix\SP - Khazix\bin\Release\SharpDX.dll
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - Khazix\SP - Khazix\bin\Release\SharpDX.Direct3D9.dll
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - Khazix\SP - Khazix\bin\Release\Newtonsoft.Json.dll
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - Khazix\SP - Khazix\obj\Release\SP - Khazix.csprojResolveAssemblyReference.cache
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - Khazix\SP - Khazix\obj\Release\SP - Khazix.exe
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - Khazix\SP - Khazix\obj\Release\SP - Khazix.pdb

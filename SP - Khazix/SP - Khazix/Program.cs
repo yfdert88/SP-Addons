@@ -23,10 +23,7 @@ namespace SP___Khazix
         static Spell.Skillshot W;
         static Spell.Skillshot E;
         static Spell.Active R;
-        public static Menu KhaMenu;
-        private static Menu ComboMenu;
-        private static Menu LaneCMenu;
-        private static Menu HarassMenu;
+        public static Menu KhaMenu, HarassMenu, LaneCMenu, ComboMenu, MiscMenu, DrawMenu;
         static AIHeroClient Kha { get { return ObjectManager.Player; } }
         static void Main(string[] args)
         {
@@ -37,8 +34,8 @@ namespace SP___Khazix
         {
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
             {
-                var hedef = TargetSelector.GetTarget(E.Range, DamageType.Physical);
-                Combo(hedef);
+             
+                Combo();
             }
 
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Harass))
@@ -86,6 +83,24 @@ namespace SP___Khazix
             LaneCMenu.Add("uselcq", new CheckBox("Use Q"));
             LaneCMenu.Add("uselcw", new CheckBox("Use W"));
             LaneCMenu.Add("LMANA", new Slider("Min. mana for laneclear :", 0, 0, 100));
+            // MİSC
+            MiscMenu = KhaMenu.AddSubMenu("Misc", "misc");
+            MiscMenu.AddGroupLabel("Misc Settings");
+            MiscMenu.AddSeparator();
+            MiscMenu.Add("skin.", new Slider("Skin ID", 0, 0, 2));
+            var Style = MiscMenu.Add("style", new Slider("Min Prediction", 1, 0, 2));
+            Style.OnValueChange += delegate
+            {
+                Style.DisplayName = "Min Prediction: " + new[] { "Low", "Medium", "High" }[Style.CurrentValue];
+            };
+            Style.DisplayName = "Min Prediction: " + new[] { "Low", "Medium", "High" }[Style.CurrentValue];
+            // DRAW
+            DrawMenu = KhaMenu.AddSubMenu("Drawing", "draw");
+            DrawMenu.AddGroupLabel("Drawing Settings");
+            DrawMenu.AddSeparator();
+            DrawMenu.Add("drawq", new CheckBox("Draw Q"));
+            DrawMenu.Add("draww", new CheckBox("Draw W"));
+            DrawMenu.Add("drawe", new CheckBox("Draw E"));
         }
 
 
@@ -109,20 +124,22 @@ namespace SP___Khazix
                 Item.UseItem(3077);
         }
 
-        static void Combo(Obj_AI_Base target)
+        static void Combo()
         {
 
             var khaq = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
-            var khaw = TargetSelector.GetTarget(W.Range, DamageType.Physical);
-            var minionkhaw = TargetSelector.GetTarget(300, DamageType.Physical);
+           // var khaw = TargetSelector.GetTarget(W.Range, DamageType.Physical);
+            var targetW = TargetSelector.GetTarget(W.Range, DamageType.Physical);
+            var wPred = W.GetPrediction(targetW);
             var khae = TargetSelector.GetTarget(E.Range, DamageType.Physical);
             var UsageItems = ComboMenu["useitems"].Cast<CheckBox>().CurrentValue;
+            var Style = MiscMenu["style"].Cast<Slider>().CurrentValue;
             var UsageQ = ComboMenu["usecomboq"].Cast<CheckBox>().CurrentValue;
             var UsageW = ComboMenu["usecombow"].Cast<CheckBox>().CurrentValue;
             var UsageE = ComboMenu["usecomboe"].Cast<CheckBox>().CurrentValue;
             var UsageR = ComboMenu["usecombor"].Cast<CheckBox>().CurrentValue;
-            var WPred = W.GetPrediction(minionkhaw);
-            if (target.IsValidTarget(800) && UsageR && R.IsReady())
+            
+            if (targetW.IsValidTarget(800) && UsageR && R.IsReady())
                 {
                     R.Cast();
                 }
@@ -130,29 +147,61 @@ namespace SP___Khazix
                 {
                     Items();
                 }
-            if (target.IsValidTarget(600) && Q.IsReady() && E.IsReady() && W.IsReady())
+            if (targetW.IsValidTarget(600) && Q.IsReady() && E.IsReady() && W.IsReady())
             {
-                
-                
+
+
                 if (UsageE)
                 {
-                    E.Cast(W.GetPrediction(target).CastPosition);
+                    E.Cast(W.GetPrediction(targetW).CastPosition);
                 }
                 if (UsageQ)
                 {
-                    Q.Cast(W.GetPrediction(target).CastPosition);
+                    Q.Cast(W.GetPrediction(targetW).CastPosition);
                 }
-                if (WPred.HitChance >= HitChance.Medium && !WPred.CollisionObjects.Any(it => it.Name.ToLower().Contains("minion")))
+                if (Style == 0)
+                {
+                    if (wPred.HitChance >= HitChance.Low)
+                    {
+                        if (UsageW)
+                        {
+                            W.Cast(targetW);
+                        }
+                        Core.DelayAction(() => E.Cast(targetW), W.CastDelay + Game.Ping);
+
+                        var EDelay = (int)((Kha.Distance(targetW) / Kha.Spellbook.GetSpell(SpellSlot.E).SData.MissileSpeed * 1000) + E.CastDelay);
+
+                        Core.DelayAction(() => Q.Cast(targetW), EDelay);
+                    }
+                }
+                if (Style == 1) { 
+                if (wPred.HitChance >= HitChance.Medium)
                 {
                     if (UsageW)
                     {
-                        W.Cast(W.GetPrediction(target).CastPosition);
+                        W.Cast(targetW);
                     }
-                    Core.DelayAction(() => E.Cast(target), W.CastDelay + Game.Ping);
+                    Core.DelayAction(() => E.Cast(targetW), W.CastDelay + Game.Ping);
 
-                    var EDelay = (int)((Kha.Distance(target) / Kha.Spellbook.GetSpell(SpellSlot.E).SData.MissileSpeed * 1000) + E.CastDelay);
+                    var EDelay = (int)((Kha.Distance(targetW) / Kha.Spellbook.GetSpell(SpellSlot.E).SData.MissileSpeed * 1000) + E.CastDelay);
 
-                    Core.DelayAction(() => Q.Cast(target), EDelay);
+                    Core.DelayAction(() => Q.Cast(targetW), EDelay);
+                }
+            }
+                if (Style == 2)
+                {
+                    if (wPred.HitChance >= HitChance.High)
+                    {
+                        if (UsageW)
+                        {
+                            W.Cast(targetW);
+                        }
+                        Core.DelayAction(() => E.Cast(targetW), W.CastDelay + Game.Ping);
+
+                        var EDelay = (int)((Kha.Distance(targetW) / Kha.Spellbook.GetSpell(SpellSlot.E).SData.MissileSpeed * 1000) + E.CastDelay);
+
+                        Core.DelayAction(() => Q.Cast(targetW), EDelay);
+                    }
                 }
             }
             else
@@ -164,12 +213,12 @@ namespace SP___Khazix
                         Q.Cast(khaq);
                     }
 
-                    if (khaw.IsValidTarget() && W.IsReady())
+                    if (targetW.IsValidTarget() && W.IsReady())
                     {
-                        if (WPred.HitChance >= HitChance.Medium && !WPred.CollisionObjects.Any(it => it.Name.ToLower().Contains("minion")))
+                        if (wPred.HitChance >= HitChance.Medium)
                         {
                             if (UsageW) {
-                                W.Cast(khaw);
+                                W.Cast(targetW);
                             }
                         }
                     }
@@ -249,7 +298,9 @@ namespace SP___Khazix
 
         static void Loading_OnLoadingComplete(EventArgs args)
         {
-            Chat.Print("5.23 - SP Khazix Loaded");
+            Chat.Print("5.25 - SP Khazix Loaded");
+            var SkinSelect = MiscMenu["skin"].Cast<Slider>().CurrentValue;
+            Kha.SetSkinId(SkinSelect);
             Q = new Spell.Targeted(SpellSlot.Q, 325);
             W = new Spell.Skillshot(SpellSlot.W, 1000, SkillShotType.Linear);
             E = new Spell.Skillshot(SpellSlot.E, 600, SkillShotType.Linear);
@@ -262,9 +313,18 @@ namespace SP___Khazix
         private static void OnDraw(EventArgs args)
         {
             // Draw range circles of our spells
-            Circle.Draw(Color.Red, Q.Range, Player.Instance.Position);
-            Circle.Draw(Color.Yellow, W.Range, Player.Instance.Position);
-            Circle.Draw(Color.Blue, E.Range, Player.Instance.Position);
+            if (DrawMenu["drawq"].Cast<CheckBox>().CurrentValue)
+            {
+                Circle.Draw(Color.Red, Q.Range, Player.Instance.Position);
+            }
+            if (DrawMenu["draww"].Cast<CheckBox>().CurrentValue)
+            {
+                Circle.Draw(Color.Yellow, W.Range, Player.Instance.Position);
+            }
+            if (DrawMenu["drawe"].Cast<CheckBox>().CurrentValue)
+            {
+                Circle.Draw(Color.Blue, E.Range, Player.Instance.Position);
+            }
         }
 
     }

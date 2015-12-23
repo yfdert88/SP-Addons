@@ -299,8 +299,6 @@ namespace SP___Khazix
         static void Loading_OnLoadingComplete(EventArgs args)
         {
             Chat.Print("5.25 - SP Khazix Loaded");
-            var SkinSelect = MiscMenu["skin"].Cast<Slider>().CurrentValue;
-            Kha.SetSkinId(SkinSelect);
             Q = new Spell.Targeted(SpellSlot.Q, 325);
             W = new Spell.Skillshot(SpellSlot.W, 1000, SkillShotType.Linear);
             E = new Spell.Skillshot(SpellSlot.E, 600, SkillShotType.Linear);
@@ -308,6 +306,8 @@ namespace SP___Khazix
             Game.OnTick += Game_OnTick;
             Drawing.OnDraw += OnDraw;
             MenuKha();
+            var SkinSelect = MiscMenu["skin"].Cast<Slider>().CurrentValue;
+            Kha.SetSkinId(SkinSelect);
         }
 
         private static void OnDraw(EventArgs args)

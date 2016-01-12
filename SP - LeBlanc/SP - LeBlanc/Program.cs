@@ -139,25 +139,25 @@ namespace SP___LeBlanc
         {
             if (!Player.GetSpell(SpellSlot.Q).IsLearned) return 0;
             return LB.CalculateDamageOnUnit(target, DamageType.Magical,
-                (float)(new double[] { 55 / 80 / 105 / 130 / 155 }[Program.Q.Level - 1] + 0.4 * LB.FlatMagicDamageMod));
+                (float)(new double[] { 55 , 80 , 105 , 130 , 155 }[Program.Q.Level - 1] + 0.4 * LB.FlatMagicDamageMod));
         }
         public static double EDamage(Obj_AI_Base target)
         {
             if (!Player.GetSpell(SpellSlot.E).IsLearned) return 0;
             return LB.CalculateDamageOnUnit(target, DamageType.Magical,
-                (float)(new double[] { 40 / 65 / 90 / 115 / 140 }[Program.E.Level - 1] + 0.2 * LB.FlatMagicDamageMod));
+                (float)(new double[] { 40 , 65 , 90 , 115 , 140 }[Program.E.Level - 1] + 0.2 * LB.FlatMagicDamageMod));
         }
         public static double WDamage(Obj_AI_Base target)
         {
             if (!Player.GetSpell(SpellSlot.W).IsLearned) return 0;
             return LB.CalculateDamageOnUnit(target, DamageType.Magical,
-                (float)(new double[] { 85 / 125 / 165 / 205 / 245 }[Program.W.Level - 1] + 0.2 * LB.FlatMagicDamageMod));
+                (float)(new double[] { 85 , 125 , 165 , 205 , 245 }[Program.W.Level - 1] + 0.2 * LB.FlatMagicDamageMod));
         }
         public static double RDamage(Obj_AI_Base target)
         {
             if (!Player.GetSpell(SpellSlot.R).IsLearned) return 0;
             return LB.CalculateDamageOnUnit(target, DamageType.Magical,
-                (float)(new double[] { 100 / 200 / 300 }[Program.R.Level - 1] + 0.2 * LB.FlatMagicDamageMod));
+                (float)(new double[] { 100 , 200 , 300 }[Program.R.Level - 1] + 0.2 * LB.FlatMagicDamageMod));
         }
 
         private static void SChoose()
@@ -206,15 +206,15 @@ namespace SP___LeBlanc
             var ePred = E.GetPrediction(targetE);
             foreach (AIHeroClient enemy in EntityManager.Heroes.Enemies)
             {
-                if (UsageQ && Q.IsReady() && targetQ.IsValidTarget() && QDamage(enemy) <= enemy.Health)
+                if (UsageQ && Q.IsReady() && targetQ.IsValidTarget() && (QDamage(enemy) >= enemy.Health))
                 {
                     Q.Cast(enemy);
                 }
-                if (UsageW && W.IsReady() && targetW.IsValidTarget() && WDamage(enemy) <= enemy.Health)
+                if (UsageW && W.IsReady() && targetW.IsValidTarget() && (WDamage(enemy) >= enemy.Health))
                 {
                     W.Cast(enemy);
                 }
-                if (UsageE && E.IsReady() && targetE.IsValidTarget() && EDamage(enemy) <= enemy.Health)
+                if (UsageE && E.IsReady() && targetE.IsValidTarget() && (EDamage(enemy) >= enemy.Health))
                 {
                     if (Style == 0)
                     {
@@ -253,11 +253,11 @@ namespace SP___LeBlanc
             var laneclearMinMana = LaneCMenu["LMANA"].Cast<Slider>().CurrentValue;
             if (Player.Instance.ManaPercent >= laneclearMinMana)
             {
-                if (QDamage(minion) < minion.Health && UsageQ && Q.IsReady() && minion.IsValidTarget())
+                if ((QDamage(minion) >= minion.Health) && UsageQ && Q.IsReady() && minion.IsValidTarget())
                 {
                     Q.Cast(minion);
                 }
-                if (WDamage(minion) < minion.Health && UsageW && W.IsReady() && minion.IsValidTarget() && WFarm <=
+                if ((WDamage(minion) >= minion.Health) && UsageW && W.IsReady() && minion.IsValidTarget() && WFarm <=
                         EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, LB.Position,
                             W.Range).Count())
                 {

@@ -263,6 +263,10 @@ namespace SP___LeBlanc
                 {
                     W.Cast(minion);
                 }
+                 if (Player.Instance.HasBuff("LeBlancDisplacement"))
+                {
+                    W2.Cast(); 
+                }
             }
         }
 

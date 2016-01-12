@@ -1,0 +1,11 @@
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - LeBlanc\SP - LeBlanc\bin\Release\SP - LeBlanc.exe.config
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - LeBlanc\SP - LeBlanc\bin\Release\SP - LeBlanc.exe
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - LeBlanc\SP - LeBlanc\bin\Release\SP - LeBlanc.pdb
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - LeBlanc\SP - LeBlanc\bin\Release\EloBuddy.dll
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - LeBlanc\SP - LeBlanc\bin\Release\EloBuddy.SDK.dll
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - LeBlanc\SP - LeBlanc\bin\Release\SharpDX.dll
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - LeBlanc\SP - LeBlanc\bin\Release\SharpDX.Direct3D9.dll
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - LeBlanc\SP - LeBlanc\bin\Release\Newtonsoft.Json.dll
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - LeBlanc\SP - LeBlanc\obj\Release\SP - LeBlanc.csprojResolveAssemblyReference.cache
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - LeBlanc\SP - LeBlanc\obj\Release\SP - LeBlanc.exe
+C:\Users\VedatKübra\Documents\Visual Studio 2015\Projects\SP - Addons\SP - LeBlanc\SP - LeBlanc\obj\Release\SP - LeBlanc.pdb

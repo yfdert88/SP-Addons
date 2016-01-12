@@ -37,7 +37,7 @@ namespace SP___LeBlanc
 			if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo)) Combo();
 			if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Flee)) Flee();
 			if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.LaneClear)) LaneClear();
-			KS();
+			// KS();
 		}
 
 		static void MenuLB()

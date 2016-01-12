@@ -66,12 +66,12 @@ namespace SP___LeBlanc
 			};
 			combo.DisplayName = "Combo 1 or 2: " + new[] { "Combo 1", "Combo 2" }[combo.CurrentValue];
 			// HARASS
-            HarassMenu = Lbmenu.AddSubMenu("Harass", "harass");
+            /*HarassMenu = Lbmenu.AddSubMenu("Harass", "harass");
 			HarassMenu.AddGroupLabel("Harass Settings");
 			HarassMenu.AddSeparator();
 			HarassMenu.Add("useharassq", new CheckBox("Use Q"));
 			HarassMenu.Add("useharassw", new CheckBox("Use W"));
-			HarassMenu.Add("useharasse", new CheckBox("Use E"));
+			HarassMenu.Add("useharasse", new CheckBox("Use E"));*/
 			// KİLLSTEAL
             KSMenu = Lbmenu.AddSubMenu("Killsteal", "ks");
 			KSMenu.AddGroupLabel("KillSteal Settings");
@@ -135,29 +135,60 @@ namespace SP___LeBlanc
             
         }
 
+        public static double QDamage(Obj_AI_Base target)
+        {
+            if (!Player.GetSpell(SpellSlot.Q).IsLearned) return 0;
+            return LB.CalculateDamageOnUnit(target, DamageType.Magical,
+                (float)(new double[] { 55 / 80 / 105 / 130 / 155 }[Program.Q.Level - 1] + 0.4 * LB.FlatMagicDamageMod));
+        }
+        public static double EDamage(Obj_AI_Base target)
+        {
+            if (!Player.GetSpell(SpellSlot.E).IsLearned) return 0;
+            return LB.CalculateDamageOnUnit(target, DamageType.Magical,
+                (float)(new double[] { 40 / 65 / 90 / 115 / 140 }[Program.E.Level - 1] + 0.2 * LB.FlatMagicDamageMod));
+        }
+        public static double WDamage(Obj_AI_Base target)
+        {
+            if (!Player.GetSpell(SpellSlot.W).IsLearned) return 0;
+            return LB.CalculateDamageOnUnit(target, DamageType.Magical,
+                (float)(new double[] { 85 / 125 / 165 / 205 / 245 }[Program.W.Level - 1] + 0.2 * LB.FlatMagicDamageMod));
+        }
+        public static double RDamage(Obj_AI_Base target)
+        {
+            if (!Player.GetSpell(SpellSlot.R).IsLearned) return 0;
+            return LB.CalculateDamageOnUnit(target, DamageType.Magical,
+                (float)(new double[] { 100 / 200 / 300 }[Program.R.Level - 1] + 0.2 * LB.FlatMagicDamageMod));
+        }
+
         private static void SChoose()
         {
-            var style = MiscMenu["sID"].DisplayName;
+            var style = MiscMenu["sID"].Cast<Slider>().CurrentValue;
 
-
-            switch (style)
+            if (style == 0)
             {
-                case "Classic":
-                    EloBuddy.Player.SetSkinId(0);
-                    break;
-                case "Wicked":
-                    EloBuddy.Player.SetSkinId(1);
-                    break;
-                case "Prestigious":
-                    EloBuddy.Player.SetSkinId(2);
-                    break;
-                case "Mistletoe":
-                    EloBuddy.Player.SetSkinId(3);
-                    break;
-                case "Ravenborn":
-                    EloBuddy.Player.SetSkinId(4);
-                    break;
+                Player.SetSkinId(0);
             }
+            if (style == 1)
+            {
+                Player.SetSkinId(1);
+            }
+            if (style == 2)
+            {
+                Player.SetSkinId(2);
+            }
+            if (style == 3)
+            {
+                Player.SetSkinId(3);
+            }
+            if (style == 4)
+            {
+                Player.SetSkinId(4);
+            }
+            if (style == 5)
+            {
+                Player.SetSkinId(5);
+            }
+
         }
 
         static void KS()
@@ -175,15 +206,15 @@ namespace SP___LeBlanc
             var ePred = E.GetPrediction(targetE);
             foreach (AIHeroClient enemy in EntityManager.Heroes.Enemies)
             {
-                if (UsageQ && Q.IsReady() && targetQ.IsValidTarget() && QDMG <= enemy.Health)
+                if (UsageQ && Q.IsReady() && targetQ.IsValidTarget() && QDamage(enemy) <= enemy.Health)
                 {
                     Q.Cast(enemy);
                 }
-                if (UsageW && W.IsReady() && targetW.IsValidTarget() && WDMG <= enemy.Health)
+                if (UsageW && W.IsReady() && targetW.IsValidTarget() && WDamage(enemy) <= enemy.Health)
                 {
                     W.Cast(enemy);
                 }
-                if (UsageE && E.IsReady() && targetE.IsValidTarget() && EDMG <= enemy.Health)
+                if (UsageE && E.IsReady() && targetE.IsValidTarget() && EDamage(enemy) <= enemy.Health)
                 {
                     if (Style == 0)
                     {
@@ -222,11 +253,11 @@ namespace SP___LeBlanc
             var laneclearMinMana = LaneCMenu["LMANA"].Cast<Slider>().CurrentValue;
             if (Player.Instance.ManaPercent >= laneclearMinMana)
             {
-                if (QDMG < minion.Health && UsageQ && Q.IsReady() && minion.IsValidTarget())
+                if (QDamage(minion) < minion.Health && UsageQ && Q.IsReady() && minion.IsValidTarget())
                 {
                     Q.Cast(minion);
                 }
-                if (WDMG < minion.Health && UsageW && W.IsReady() && minion.IsValidTarget() && WFarm <=
+                if (WDamage(minion) < minion.Health && UsageW && W.IsReady() && minion.IsValidTarget() && WFarm <=
                         EntityManager.MinionsAndMonsters.GetLaneMinions(EntityManager.UnitTeam.Enemy, LB.Position,
                             W.Range).Count())
                 {
@@ -362,20 +393,22 @@ namespace SP___LeBlanc
         private static void OnDraw(EventArgs args)
         {
             var Combo = ComboMenu["combo"].Cast<Slider>().CurrentValue;
-            if (Combo == 1)
-            {
-                Drawing.DrawText(Drawing.WorldToScreen(Player.Instance.Position) - new Vector2(0, 34), Color.Green, "Combo 2: Open", 2);
-            }
+            if (DrawMenu["drawst"].Cast<CheckBox>().CurrentValue) {
+                if (Combo == 1)
+                {
+                    Drawing.DrawText(Drawing.WorldToScreen(Player.Instance.Position) - new Vector2(0, 34), Color.Green, "Combo 2: Open", 2);
+                }
                 if (Combo == 0)
                 {
                     Drawing.DrawText(Drawing.WorldToScreen(Player.Instance.Position) - new Vector2(0, 34), Color.Green, "Combo : Open", 2);
                 }
-            if (Q.IsReady() && W.IsReady() && E.IsReady() && R.IsReady())
+                if (Q.IsReady() && W.IsReady() && E.IsReady() && R.IsReady())
                 {
                     Drawing.DrawText(Drawing.WorldToScreen(Player.Instance.Position) - new Vector2(0, 17), Color.Green, "Full Combo is Ready", 2);
-            }else
-            {
-                Drawing.DrawText(Drawing.WorldToScreen(Player.Instance.Position) - new Vector2(0, 17), Color.Red, "Full Combo is not Ready", 2);
+                } else
+                {
+                    Drawing.DrawText(Drawing.WorldToScreen(Player.Instance.Position) - new Vector2(0, 17), Color.Red, "Full Combo is not Ready", 2);
+                }
             }
             if (DrawMenu["drawq"].Cast<CheckBox>().CurrentValue)
             {

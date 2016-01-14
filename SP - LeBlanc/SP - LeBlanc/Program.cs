@@ -382,7 +382,7 @@ namespace SP___LeBlanc
 
         static void Loading_OnLoadingComplete(EventArgs args)
         {
-            Chat.Print("5.25 - SP LeBlanc Loaded");
+            Chat.Print("6.1 - SP LeBlanc Loaded");
             Q = new Spell.Targeted(SpellSlot.Q, 700);
             W = new Spell.Skillshot(SpellSlot.W, 600, SkillShotType.Circular);
             W2 = new Spell.Active(SpellSlot.W);

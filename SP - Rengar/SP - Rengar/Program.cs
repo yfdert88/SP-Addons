@@ -49,7 +49,7 @@ namespace SP___Rengar
             RengarM = MainMenu.AddMenu("SP-Rengar", "SP-Rengar");
             RengarM.AddGroupLabel("SP-Rengar");
             RengarM.AddSeparator();
-            RengarM.AddGroupLabel("Q-W-E = Combo");
+            RengarM.AddGroupLabel("OneShoot, Snare or AP Combo");
             RengarM.AddGroupLabel("Q-W-E = Jungle Clear");
             RengarM.AddGroupLabel("Q-W-E = Lane Clear");
             RengarM.AddGroupLabel("E = Flee");
@@ -65,8 +65,24 @@ namespace SP___Rengar
             ComboMenu.Add("usecomboe", new CheckBox("Use E"));
             ComboMenu.AddSeparator();
             ComboMenu.Add("useitems", new CheckBox("Use Items"));
-            ComboMenu.AddLabel("OneShoot = 1 || Snare = 2");
-            ComboMenu.Add("combomode", new Slider("Combo Mode", 1, 1, 2));
+            ComboMenu.AddLabel("OneShoot = 1 || Snare = 2 || AP Combo = 3");
+            ComboMenu.Add("combomode", new Slider("Combo Mode", 1, 1, 3));
+            var switcher = ComboMenu.Add("Switcher", new KeyBind("Combo Switcher", false, KeyBind.BindTypes.HoldActive, (uint)'G'));
+            switcher.OnValueChange += delegate (ValueBase<bool> sender, ValueBase<bool>.ValueChangeArgs args)
+            {
+                if (args.NewValue == true)
+                {
+                    var cast = ComboMenu["combomode"].Cast<Slider>();
+                    if (cast.CurrentValue == cast.MaxValue)
+                    {
+                        cast.CurrentValue = 0;
+                    }
+                    else
+                    {
+                        cast.CurrentValue++;
+                    }
+                }
+            };
             // LANE
             LaneCMenu = RengarM.AddSubMenu("Lane Clear Settings", "laneclear");
             LaneCMenu.AddGroupLabel("Lane Clear Settings");
@@ -168,7 +184,6 @@ namespace SP___Rengar
                 Flee();
             }
             AutoW();
-            AutoHarass();
         }
 
         static void ComboChecked()
@@ -178,9 +193,13 @@ namespace SP___Rengar
             {
                 OneShootCombo();
             }
-            else
+            if (ComboMode == 2)
             {
                 ComboSnare();
+            }
+            if (ComboMode == 3)
+            {
+                APCombo();
             }
         }
 
@@ -264,46 +283,6 @@ namespace SP___Rengar
             {
                 E.Cast(RE);
             }
-        }
-
-        static void AutoHarass()
-        {
-            var RW = TargetSelector.GetTarget(W.Range, DamageType.Magical);
-            var RE = TargetSelector.GetTarget(E.Range, DamageType.Physical);
-            var ePred = E.GetPrediction(RE);
-            var e = ePred.CollisionObjects;
-            if (Player.HasBuff("RengarR")) return;
-            if (Player.Instance.ManaPercent < 5)
-            {
-                var style = MiscMenu["style"].Cast<Slider>().CurrentValue;
-                if (style == 0)
-                {
-                    if (ePred.HitChance >= HitChance.Low)
-                    {
-                        E.Cast(RE);
-                    }
-                }
-                if (style == 1)
-                {
-                    if (ePred.HitChance >= HitChance.Medium)
-                    {
-                        E.Cast(RE);
-                    }
-                }
-                if (style == 2)
-                {
-                    if (ePred.HitChance >= HitChance.High)
-                    {
-                        E.Cast(RE);
-                    }
-                }
-                if (RW.IsValidTarget() && W.IsReady())
-                {
-                    W.Cast(RW);
-
-                }
-            }
-
         }
 
         static void Flee()
@@ -437,7 +416,99 @@ namespace SP___Rengar
             }
     }
     
-        
+        static void APCombo()
+        {
+            var RQ = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
+            var TakeYoumu = TargetSelector.GetTarget(800, DamageType.Physical);
+            var Takebotrk = TargetSelector.GetTarget(550, DamageType.Physical);
+            var RW = TargetSelector.GetTarget(W.Range, DamageType.Magical);
+            var RE = TargetSelector.GetTarget(E.Range, DamageType.Physical);
+            var ePred = E.GetPrediction(RE);
+            var e = ePred.CollisionObjects;
+            if (Player.HasBuff("RengarR"))
+            {
+                return;
+            }
+            if (Takebotrk.IsValidTarget())
+            {
+                Botrk(Takebotrk);
+            }
+            if (Player.Instance.Mana <= 5 && RW.IsValidTarget() && W.IsReady())
+            {
+                W.Cast(RW);
+
+            }
+            if (!Q.IsReady() && RQ.IsValidTarget(Rengar.GetAutoAttackRange()))
+            {
+                Items();
+            }
+
+            if (!W.IsReady() && Q.IsReady() && Player.Instance.Mana < 5 && RQ.IsValidTarget())
+            {
+                Q.Cast();
+
+            }
+            if (TakeYoumu.IsValidTarget())
+            {
+                Youmu();
+            }
+            if (!Player.Instance.HasBuff("rengarpassivebuff") && RW.IsValidTarget() && W.IsReady())
+            {
+                W.Cast();
+                Items();
+                Orbwalker.ResetAutoAttack();
+            }
+            if (!W.IsReady() && RE.IsValidTarget())
+            {
+                var style = MiscMenu["style"].Cast<Slider>().CurrentValue;
+                if (style == 0)
+                {
+                    if (ePred.HitChance >= HitChance.Low)
+                    {
+                        E.Cast(RE);
+                    }
+                }
+                if (style == 1)
+                {
+                    if (ePred.HitChance >= HitChance.Medium)
+                    {
+                        E.Cast(RE);
+                    }
+                }
+                if (style == 2)
+                {
+                    if (ePred.HitChance >= HitChance.High)
+                    {
+                        E.Cast(RE);
+                    }
+                }
+            }
+            if (RE.HealthPercent < 50 && RE.IsValidTarget())
+            {
+                var style = MiscMenu["style"].Cast<Slider>().CurrentValue;
+                if (style == 0)
+                {
+                    if (ePred.HitChance >= HitChance.Low)
+                    {
+                        E.Cast(RE);
+                    }
+                }
+                if (style == 1)
+                {
+                    if (ePred.HitChance >= HitChance.Medium)
+                    {
+                        E.Cast(RE);
+                    }
+                }
+                if (style == 2)
+                {
+                    if (ePred.HitChance >= HitChance.High)
+                    {
+                        E.Cast(RE);
+                    }
+                }
+            }
+        }
 
         static void LaneRengo()
         {
@@ -548,6 +619,10 @@ namespace SP___Rengar
                     if (Combo == 2)
                     {
                         Drawing.DrawText(Drawing.WorldToScreen(Player.Instance.Position) - new Vector2(0, 34), Color.White, "Snare", 2);
+                    }
+                    if (Combo == 3)
+                    {
+                        Drawing.DrawText(Drawing.WorldToScreen(Player.Instance.Position) - new Vector2(0, 34), Color.White, "AP Combo", 2);
                     }
                 }
             }

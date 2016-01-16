@@ -52,8 +52,10 @@ namespace SP___Rengar
             RengarM.AddGroupLabel("SP-Rengar");
             RengarM.AddSeparator();
             RengarM.AddGroupLabel("Q-W-E = Combo");
-            RengarM.AddGroupLabel("E-W-Q = Harass");
-            RengarM.AddGroupLabel("W-Q-E = Lane Clear");
+            RengarM.AddGroupLabel("Q-W-E = Jungle Clear");
+            RengarM.AddGroupLabel("Q-W-E = Lane Clear");
+            RengarM.AddGroupLabel("E = Flee");
+            RengarM.AddGroupLabel("Auto W");
             RengarM.AddGroupLabel("İn the air Hydra,Tiamat, Item's Usage");
             RengarM.AddLabel("SP-Rengar v1.0.0.2");
             // COMBO

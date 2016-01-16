@@ -24,9 +24,8 @@ namespace SP___Rengar
         static Spell.Skillshot W;
         static Spell.Skillshot E;
         static Spell.Active R;
-        static bool savestack;
         static AIHeroClient Rengar { get { return ObjectManager.Player; } }
-        public static Menu RengarM, HarassMenu, LaneCMenu, ComboMenu, MiscMenu, DrawMenu, JungMenu;
+        public static Menu RengarM, LaneCMenu, ComboMenu, MiscMenu, DrawMenu, JungMenu;
         static void Main(string[] args)
         {
             Loading.OnLoadingComplete += Loading_OnLoadingComplete;
@@ -43,7 +42,6 @@ namespace SP___Rengar
             Drawing.OnDraw += OnDraw;
             Player.SetSkinId(2);
             MenuRengo();
-            
         }
 
         static void MenuRengo()
@@ -122,6 +120,14 @@ namespace SP___Rengar
                 Item.UseItem(3142);
         }
 
+        static void Botrk(AIHeroClient Target)
+        {
+            if (Item.HasItem(3144) && Item.CanUseItem(3144)) // Bilgewater
+                Item.UseItem(3144, Target);
+            if (Item.HasItem(3153) && Item.CanUseItem(3153)) // BOTRK's
+                Item.UseItem(3153, Target);
+        }
+
         static void Itemsminion()
         {
             if (Item.HasItem(3074) && Item.CanUseItem(3074)) // Hydra
@@ -140,11 +146,9 @@ namespace SP___Rengar
                 W.Cast(Rengar);
             }
         }
-
         static void Game_OnTick(EventArgs args)
         {
-            AutoW();
-            AutoHarass();
+            
             if (Orbwalker.ActiveModesFlags.HasFlag(Orbwalker.ActiveModes.Combo))
             {
                 ComboChecked();
@@ -163,6 +167,8 @@ namespace SP___Rengar
             {
                 Flee();
             }
+            AutoW();
+            AutoHarass();
         }
 
         static void ComboChecked()
@@ -183,6 +189,7 @@ namespace SP___Rengar
             var RQ = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
             var TakeYoumu = TargetSelector.GetTarget(Rengar.GetAutoAttackRange() + 700, DamageType.Physical);
             var RW = TargetSelector.GetTarget(W.Range, DamageType.Magical);
+            var Takebotrk = TargetSelector.GetTarget(550, DamageType.Physical);
             var RE = TargetSelector.GetTarget(E.Range, DamageType.Physical);
             var ePred = E.GetPrediction(RE);
             var e = ePred.CollisionObjects;
@@ -190,12 +197,16 @@ namespace SP___Rengar
             {
                 return;
             }
+            if (Takebotrk.IsValidTarget())
+            {
+                Botrk(Takebotrk);
+            }
             if (RQ.IsValidTarget(Rengar.GetAutoAttackRange()))
             {
                 Items();
             }
             // COMBO LOGİC -START-
-            if (Player.Instance.ManaPercent >= 5) 
+            if (Player.Instance.ManaPercent == 5) 
             {
                 var style = MiscMenu["style"].Cast<Slider>().CurrentValue;
                 if (style == 0)
@@ -298,11 +309,37 @@ namespace SP___Rengar
         static void Flee()
         {
             var RE = TargetSelector.GetTarget(E.Range, DamageType.Physical);
+            var Takebotrk = TargetSelector.GetTarget(550, DamageType.Physical);
             var ePred = E.GetPrediction(RE);
             var e = ePred.CollisionObjects;
+            if (Takebotrk.IsValidTarget())
+            {
+                Botrk(Takebotrk);
+            }
             if (RE.IsValidTarget() && E.IsReady())
             {
-                E.Cast(RE);
+                var style = MiscMenu["style"].Cast<Slider>().CurrentValue;
+                if (style == 0)
+                {
+                    if (ePred.HitChance >= HitChance.Low)
+                    {
+                        E.Cast(RE);
+                    }
+                }
+                if (style == 1)
+                {
+                    if (ePred.HitChance >= HitChance.Medium)
+                    {
+                        E.Cast(RE);
+                    }
+                }
+                if (style == 2)
+                {
+                    if (ePred.HitChance >= HitChance.High)
+                    {
+                        E.Cast(RE);
+                    }
+                }
             }
         }
 
@@ -310,6 +347,7 @@ namespace SP___Rengar
         {
             var RQ = TargetSelector.GetTarget(Q.Range, DamageType.Physical);
             var TakeYoumu = TargetSelector.GetTarget(800, DamageType.Physical);
+            var Takebotrk = TargetSelector.GetTarget(550, DamageType.Physical);
             var RW = TargetSelector.GetTarget(W.Range, DamageType.Magical);
             var RE = TargetSelector.GetTarget(E.Range, DamageType.Physical);
             var ePred = E.GetPrediction(RE);
@@ -317,6 +355,10 @@ namespace SP___Rengar
             if (Player.HasBuff("RengarR"))
             {
                 return;
+            }
+            if (Takebotrk.IsValidTarget())
+            {
+                Botrk(Takebotrk);
             }
             if (!Q.IsReady() && RQ.IsValidTarget(Rengar.GetAutoAttackRange()))
             {
@@ -345,11 +387,53 @@ namespace SP___Rengar
             }
             if (!Q.IsReady() && RE.IsValidTarget())
             {
-                E.Cast(RE);
+                var style = MiscMenu["style"].Cast<Slider>().CurrentValue;
+                if (style == 0)
+                {
+                    if (ePred.HitChance >= HitChance.Low)
+                    {
+                        E.Cast(RE);
+                    }
+                }
+                if (style == 1)
+                {
+                    if (ePred.HitChance >= HitChance.Medium)
+                    {
+                        E.Cast(RE);
+                    }
+                }
+                if (style == 2)
+                {
+                    if (ePred.HitChance >= HitChance.High)
+                    {
+                        E.Cast(RE);
+                    }
+                }
             }
             if (RE.HealthPercent < 50 && RE.IsValidTarget())
             {
-                E.Cast(RE);
+                var style = MiscMenu["style"].Cast<Slider>().CurrentValue;
+                if (style == 0)
+                {
+                    if (ePred.HitChance >= HitChance.Low)
+                    {
+                        E.Cast(RE);
+                    }
+                }
+                if (style == 1)
+                {
+                    if (ePred.HitChance >= HitChance.Medium)
+                    {
+                        E.Cast(RE);
+                    }
+                }
+                if (style == 2)
+                {
+                    if (ePred.HitChance >= HitChance.High)
+                    {
+                        E.Cast(RE);
+                    }
+                }
             }
     }
     
@@ -357,68 +441,80 @@ namespace SP___Rengar
 
         static void LaneRengo()
         {
-            var minionq = (Obj_AI_Minion)GetEnemy(Program.Q.Range, GameObjectType.obj_AI_Minion);
+            /*var minionq = (Obj_AI_Minion)GetEnemy(Program.Q.Range, GameObjectType.obj_AI_Minion);
             var minionw = (Obj_AI_Minion)GetEnemy(Program.W.Range, GameObjectType.obj_AI_Minion);
-            var minione = (Obj_AI_Minion)GetEnemy(Program.E.Range, GameObjectType.obj_AI_Minion);
+            var minione = (Obj_AI_Minion)GetEnemy(Program.E.Range, GameObjectType.obj_AI_Minion);*/
             var UsageQ = LaneCMenu["uselcq"].Cast<CheckBox>().CurrentValue;
             var UsageW = LaneCMenu["uselcw"].Cast<CheckBox>().CurrentValue;
             var UsageE = LaneCMenu["uselce"].Cast<CheckBox>().CurrentValue;
-            if (minionq == null) return;
-            
+            //if (minionq == null) return;
+            var target =
+                EntityManager.MinionsAndMonsters.EnemyMinions.FirstOrDefault(x => !x.IsDead && Q.IsInRange(x));
+            var targetw =
+                EntityManager.MinionsAndMonsters.EnemyMinions.FirstOrDefault(x => !x.IsDead && W.IsInRange(x));
+            var targete =
+                EntityManager.MinionsAndMonsters.EnemyMinions.FirstOrDefault(x => !x.IsDead && E.IsInRange(x));
             var savest = LaneCMenu["savestack"].Cast<CheckBox>().CurrentValue;
             if (Player.Instance.Mana < 5 || (Player.Instance.Mana == 5 && !savest))
             {
-                if (minionq.IsValidTarget(Rengar.GetAutoAttackRange()))
+                if (target.IsValidTarget(Rengar.GetAutoAttackRange()))
                 {
                 Itemsminion();
                 }
                 
-                if (UsageQ && Q.IsReady() && minionq.IsValidTarget())
+                if (UsageQ && Q.IsReady() && target.IsValidTarget() && (QDamage(target) >= target.Health))
                 {
                     Q.Cast();
                     Orbwalker.ResetAutoAttack();
                     
                 }
-                if (UsageW && W.IsReady() && minionw.IsValidTarget())
+                if (UsageW && W.IsReady() && targetw.IsValidTarget())
                 {
-                    W.Cast(minionw);
+                    W.Cast(targetw);
                 }
-                if (UsageE && E.IsReady() && minione.IsValidTarget())
+                if (UsageE && E.IsReady() && targete.IsValidTarget())
                 {
-                    E.Cast(minione);
+                    E.Cast(targete);
                 }
             }
         }
 
+
+        public static double QDamage(Obj_AI_Base target)
+        {
+            if (!Player.GetSpell(SpellSlot.Q).IsLearned) return 0;
+            return Rengar.CalculateDamageOnUnit(target, DamageType.Magical,
+                (float)(new double[] { 30 , 60 , 90 , 120 , 150 }[Program.Q.Level - 1] + 0.4 * Rengar.FlatMagicDamageMod));
+        }
+
         static void JungR()
         {
-            Obj_AI_Base jung =
-                EntityManager.MinionsAndMonsters.GetJungleMonsters(
-
-                    ObjectManager.Player.Position,
-                    600,
-                    true).FirstOrDefault();
             var UsageQ = JungMenu["usejcq"].Cast<CheckBox>().CurrentValue;
             var UsageW = JungMenu["usejcw"].Cast<CheckBox>().CurrentValue;
             var UsageE = JungMenu["usejce"].Cast<CheckBox>().CurrentValue;
             var savest = JungMenu["savestack"].Cast<CheckBox>().CurrentValue;
-            if (Player.Instance.Mana < 5 || (Player.Instance.Mana == 5 && !savest))
-            {
-                if (UsageQ && Q.IsReady() && jung.IsValidTarget())
+            foreach (var monster in EntityManager.MinionsAndMonsters.Monsters)
                 {
-                    Q.Cast();
-                    Orbwalker.ResetAutoAttack();
-                    Itemsminion();
-                }
-                if (UsageW && W.IsReady() && jung.IsValidTarget())
-                {
-                    W.Cast(jung);
-                }
-                if (UsageE && E.IsReady() && jung.IsValidTarget())
-                {
-                    E.Cast(jung);
+                if (Player.Instance.Mana < 5 || (Player.Instance.Mana == 5 && !savest))
+                 {
+                
+                    if (Rengar.Distance(monster) < Rengar.AttackRange && UsageQ && Q.IsReady())
+                    {
+                        Q.Cast();
+                        Orbwalker.ResetAutoAttack();
+                        Itemsminion();
+                    }
+                    if (UsageW && W.IsReady() && Rengar.Distance(monster) <= W.Range)
+                    {
+                        W.Cast(monster);
+                    }
+                    if (UsageE && E.IsReady() && Rengar.Distance(monster) <= E.Range)
+                    {
+                        E.Cast(monster);
+                    }
                 }
             }
+            
         }
 
         private static Obj_AI_Base GetEnemy(float range, GameObjectType t)

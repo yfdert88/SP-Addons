@@ -224,7 +224,7 @@ namespace SP___Rengar
             else
             {
                 var HealthW = MiscMenu["healthw"].Cast<Slider>().CurrentValue;
-                if (Q.IsReady() && Rengar.HealthPercent != HealthW && Player.Instance.Mana == 5)
+                if (!E.IsReady() && Q.IsReady() && Rengar.HealthPercent != HealthW && Player.Instance.Mana == 5)
                 {
                     Q.Cast();
                     
@@ -238,7 +238,7 @@ namespace SP___Rengar
             {
                 Youmu();
             }
-            if (!Player.Instance.HasBuff("rengarpassivebuff") && RQ.IsValidTarget() && Q.IsReady())
+            if (!E.IsReady() && !Player.Instance.HasBuff("rengarpassivebuff") && RQ.IsValidTarget() && Q.IsReady())
             {
                 Q.Cast();
                 Items();

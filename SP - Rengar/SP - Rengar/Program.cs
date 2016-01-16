@@ -261,6 +261,7 @@ namespace SP___Rengar
             var RE = TargetSelector.GetTarget(E.Range, DamageType.Physical);
             var ePred = E.GetPrediction(RE);
             var e = ePred.CollisionObjects;
+            if (Player.HasBuff("RengarR")) return;
             if (Player.Instance.ManaPercent < 5)
             {
                 var style = MiscMenu["style"].Cast<Slider>().CurrentValue;

@@ -232,21 +232,36 @@ namespace SP___Rengar
                 {
                     if (ePred.HitChance >= HitChance.Low)
                     {
+                        Orbwalker.DisableAttacking = false;
                         E.Cast(RE);
+                    }
+                    else
+                    {
+                        Orbwalker.DisableAttacking = true;
                     }
                 }
                 if (style == 1)
                 {
                     if (ePred.HitChance >= HitChance.Medium)
                     {
+                        Orbwalker.DisableAttacking = false;
                         E.Cast(RE);
+                    }
+                    else
+                    {
+                        Orbwalker.DisableAttacking = true;
                     }
                 }
                 if (style == 2)
                 {
                     if (ePred.HitChance >= HitChance.High)
                     {
+                        Orbwalker.DisableAttacking = false;
                         E.Cast(RE);
+                    }
+                    else
+                    {
+                        Orbwalker.DisableAttacking = true;
                     }
                 }
 
@@ -258,9 +273,6 @@ namespace SP___Rengar
                 {
                     Q.Cast();
                     
-                }else
-                {
-                    W.Cast(Rengar);
                 }
             }
         // COMBO LOGİC -FİNİSH- 
@@ -274,7 +286,7 @@ namespace SP___Rengar
                 Items();
                 Orbwalker.ResetAutoAttack();
             }
-            if (RW.IsValidTarget() && W.IsReady())
+            if (!E.IsReady() && RW.IsValidTarget() && W.IsReady())
             {
                 W.Cast(RW);
                 
